@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Detector – Identify Fonts From PDF & Word Files</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ecff;
+    --accent1: #6c3fff;
+    --accent2: #ff5c87;
+    --accent3: #00d4b4;
+    --card-bg: rgba(255,255,255,0.72);
+    --shadow: 0 8px 40px rgba(108,63,255,0.13);
+    --shadow-lg: 0 20px 60px rgba(108,63,255,0.18);
+    --radius: 24px;
+    --text: #1a1030;
+    --muted: #7b6fa0;
+    --border: rgba(108,63,255,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 15% 10%, rgba(108,63,255,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 85% 80%, rgba(255,92,135,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(0,212,180,0.08) 0%, transparent 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px;
+    color: var(--text);
+  }
+
+  /* Floating blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.25;
+    pointer-events: none;
+    animation: blobFloat 8s ease-in-out infinite alternate;
+  }
+  .blob-1 { width: 400px; height: 400px; background: var(--accent1); top: -100px; left: -100px; animation-duration: 9s; }
+  .blob-2 { width: 300px; height: 300px; background: var(--accent2); bottom: -80px; right: -60px; animation-duration: 11s; animation-delay: 2s; }
+  .blob-3 { width: 250px; height: 250px; background: var(--accent3); top: 40%; left: 60%; animation-duration: 13s; animation-delay: 1s; }
+
+  @keyframes blobFloat {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(30px, 20px) scale(1.05); }
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 52px;
+    position: relative;
+  }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(108,63,255,0.12), rgba(255,92,135,0.10));
+    border: 1px solid rgba(108,63,255,0.25);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent1);
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    max-width: 680px;
+    margin: 0 auto 16px;
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 420px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Card */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 40px;
+    width: 100%;
+    max-width: 620px;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.4s ease;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(108,63,255,0.3), rgba(255,92,135,0.2), rgba(0,212,180,0.15));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card:hover { box-shadow: 0 28px 80px rgba(108,63,255,0.22); }
+
+  /* Drop zone */
+  .dropzone {
+    border: 2px dashed rgba(108,63,255,0.3);
+    border-radius: 18px;
+    padding: 52px 30px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, rgba(108,63,255,0.03), rgba(255,92,135,0.03));
+    overflow: hidden;
+  }
+
+  .dropzone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(108,63,255,0.08), rgba(255,92,135,0.06));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 16px;
+  }
+
+  .dropzone:hover, .dropzone.drag-over {
+    border-color: var(--accent1);
+    transform: scale(1.01);
+  }
+
+  .dropzone:hover::before, .dropzone.drag-over::before { opacity: 1; }
+
+  .dropzone.drag-over {
+    border-style: solid;
+    box-shadow: 0 0 0 4px rgba(108,63,255,0.12), inset 0 0 30px rgba(108,63,255,0.08);
+  }
+
+  .drop-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, rgba(108,63,255,0.12), rgba(255,92,135,0.10));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .dropzone:hover .drop-icon { transform: scale(1.1) translateY(-4px); }
+
+  .drop-icon svg { width: 34px; height: 34px; }
+
+  .drop-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .drop-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .file-types {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .file-tag {
+    background: rgba(108,63,255,0.1);
+    color: var(--accent1);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(108,63,255,0.2);
+    transition: all 0.2s ease;
+  }
+
+  .dropzone:hover .file-tag { background: rgba(108,63,255,0.15); }
+
+  input[type="file"] { display: none; }
+
+  /* File info */
+  .file-info {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(108,63,255,0.06), rgba(255,92,135,0.04));
+    border: 1px solid rgba(108,63,255,0.15);
+    border-radius: 14px;
+    margin-top: 20px;
+    animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .file-info.visible { display: flex; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .file-icon-sm {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .file-icon-sm svg { width: 20px; height: 20px; }
+
+  .file-details { flex: 1; min-width: 0; }
+
+  .file-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-ready { font-size: 12px; color: var(--accent3); font-weight: 500; margin-top: 2px; }
+
+  .remove-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+  }
+  .remove-btn:hover { color: var(--accent2); background: rgba(255,92,135,0.1); }
+
+  /* Detect button */
+  .detect-btn {
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--accent1) 0%, #9b59ff 50%, var(--accent2) 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(108,63,255,0.35);
+  }
+
+  .detect-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .detect-btn:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(108,63,255,0.45);
+    background-position: right center;
+  }
+
+  .detect-btn:hover::after { opacity: 1; }
+  .detect-btn:active { transform: translateY(0); }
+
+  .detect-btn:disabled {
+    background: linear-gradient(135deg, #c5bce8, #d4b8c7);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+  /* Loading spinner */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .detect-btn.loading .spinner { display: block; }
+  .detect-btn.loading .btn-text { display: none; }
+  .detect-btn.loading .btn-icon { display: none; }
+
+  /* Results */
+  .results-section {
+    width: 100%;
+    max-width: 620px;
+    margin-top: 28px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+    pointer-events: none;
+  }
+
+  .results-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  .results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .results-count {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: #fff;
+    border-radius: 100px;
+    padding: 3px 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .font-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .font-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fontReveal 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  }
+
+  @keyframes fontReveal {
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .font-card:hover {
+    transform: translateX(6px);
+    border-color: rgba(108,63,255,0.3);
+    box-shadow: 0 8px 30px rgba(108,63,255,0.12);
+  }
+
+  .font-swatch {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: #fff;
+  }
+
+  .font-meta { flex: 1; }
+
+  .font-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .font-attrs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .attr-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 6px;
+    border: 1px solid;
+  }
+
+  .attr-serif { color: #6c3fff; background: rgba(108,63,255,0.08); border-color: rgba(108,63,255,0.2); }
+  .attr-sans { color: #00b49e; background: rgba(0,212,180,0.08); border-color: rgba(0,212,180,0.2); }
+  .attr-bold { color: #e94080; background: rgba(255,92,135,0.08); border-color: rgba(255,92,135,0.2); }
+  .attr-regular { color: #7b6fa0; background: rgba(123,111,160,0.08); border-color: rgba(123,111,160,0.2); }
+  .attr-embed { color: #f59e0b; background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+  .attr-system { color: #6b7280; background: rgba(107,114,128,0.08); border-color: rgba(107,114,128,0.2); }
+
+  .font-usage {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .usage-bar {
+    width: 56px; height: 4px;
+    background: rgba(108,63,255,0.1);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+    margin-left: auto;
+  }
+
+  .usage-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    border-radius: 2px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 56px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  footer a { color: var(--accent1); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    body { padding: 28px 14px 60px; }
+    .card { padding: 26px 20px; }
+    .dropzone { padding: 38px 20px; }
+    h1 { font-size: 30px; }
+    .font-card { padding: 14px 16px; }
+    .font-swatch { width: 40px; height: 40px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background blobs -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="badge">✦ Free Font Detection Tool</div>
+  <h1>Font Detector – <span>Identify Fonts</span><br>From PDF &amp; Word Files</h1>
+  <p class="subtitle">Upload any PDF or DOCX file and instantly discover every font used inside — no account needed.</p>
+</header>
+
+<!-- Main card -->
+<div class="card">
+  <div class="dropzone" id="dropzone">
+    <div class="drop-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#6c3fff"/>
+            <stop offset="100%" stop-color="#ff5c87"/>
+          </linearGradient>
+        </defs>
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+    </div>
+    <div class="drop-title">Drop your file here</div>
+    <div class="drop-sub">or click to browse from your device</div>
+    <div class="file-types">
+      <span class="file-tag">PDF</span>
+      <span class="file-tag">DOCX</span>
+      <span class="file-tag">DOC</span>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf,.doc,.docx">
+  </div>
+
+  <!-- File info -->
+  <div class="file-info" id="fileInfo">
+    <div class="file-icon-sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+    </div>
+    <div class="file-details">
+      <div class="file-name" id="fileName">document.pdf</div>
+      <div class="file-ready">✓ Ready to scan</div>
+    </div>
+    <button class="remove-btn" id="removeBtn" title="Remove file">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Detect button -->
+  <button class="detect-btn" id="detectBtn" disabled>
+    <div class="btn-inner">
+      <div class="spinner"></div>
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="18" height="18">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <span class="btn-text">Detect Fonts</span>
+    </div>
+  </button>
+</div>
+
+<!-- Results -->
+<div class="results-section" id="resultsSection">
+  <div class="results-header">
+    <div class="results-title">Detected Fonts</div>
+    <div class="results-count" id="resultsCount">0 found</div>
+  </div>
+  <div class="font-grid" id="fontGrid"></div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>Works entirely in your browser · No file is uploaded to any server</p>
+  <p style="margin-top:6px;">Made with ❤ by <a href="#">FontDetector.app</a></p>
+</footer>
+
+<script>
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const fileInfo = document.getElementById('fileInfo');
+  const fileName = document.getElementById('fileName');
+  const removeBtn = document.getElementById('removeBtn');
+  const detectBtn = document.getElementById('detectBtn');
+  const resultsSection = document.getElementById('resultsSection');
+  const fontGrid = document.getElementById('fontGrid');
+  const resultsCount = document.getElementById('resultsCount');
+
+  // Fake font data pool
+  const fakeFonts = [
+    { name: 'Helvetica Neue', style: 'Sans-serif', weight: 'Regular', embedded: true, usage: 85, color: '#6c3fff' },
+    { name: 'Times New Roman', style: 'Serif', weight: 'Bold', embedded: false, usage: 65, color: '#ff5c87' },
+    { name: 'Garamond', style: 'Serif', weight: 'Regular', embedded: true, usage: 45, color: '#00d4b4' },
+    { name: 'Futura PT', style: 'Sans-serif', weight: 'Bold', embedded: true, usage: 72, color: '#f59e0b' },
+    { name: 'Georgia', style: 'Serif', weight: 'Regular', embedded: false, usage: 38, color: '#e94080' },
+    { name: 'Optima', style: 'Sans-serif', weight: 'Regular', embedded: true, usage: 22, color: '#7c3aed' },
+    { name: 'Courier New', style: 'Monospace', weight: 'Regular', embedded: false, usage: 15, color: '#0891b2' },
+    { name: 'Myriad Pro', style: 'Sans-serif', weight: 'Bold', embedded: true, usage: 58, color: '#059669' },
+  ];
+
+  let hasFile = false;
+
+  // Drag and drop
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('drag-over');
+  });
+
+  dropzone.addEventListener('dragleave', (e) => {
+    if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('drag-over');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+
+  removeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    clearFile();
+  });
+
+  function handleFile(file) {
+    const allowed = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'];
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['pdf','doc','docx'].includes(ext)) {
+      shakeDropzone();
+      return;
+    }
+    hasFile = true;
+    fileName.textContent = file.name;
+    fileInfo.classList.add('visible');
+    detectBtn.disabled = false;
+    // Hide old results
+    resultsSection.classList.remove('visible');
+  }
+
+  function clearFile() {
+    hasFile = false;
+    fileInput.value = '';
+    fileInfo.classList.remove('visible');
+    detectBtn.disabled = true;
+    resultsSection.classList.remove('visible');
+  }
+
+  function shakeDropzone() {
+    dropzone.style.animation = 'shake 0.4s ease';
+    setTimeout(() => dropzone.style.animation = '', 400);
+  }
+
+  // Add shake keyframes dynamically
+  const shakeStyle = document.createElement('style');
+  shakeStyle.textContent = `
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+  `;
+  document.head.appendChild(shakeStyle);
+
+  detectBtn.addEventListener('click', () => {
+    if (!hasFile || detectBtn.disabled) return;
+
+    detectBtn.classList.add('loading');
+    detectBtn.disabled = true;
+    resultsSection.classList.remove('visible');
+
+    setTimeout(() => {
+      detectBtn.classList.remove('loading');
+      detectBtn.disabled = false;
+      showResults();
+    }, 2200);
+  });
+
+  function showResults() {
+    // Pick 4-7 random fonts
+    const count = 4 + Math.floor(Math.random() * 4);
+    const selected = [...fakeFonts].sort(() => Math.random() - 0.5).slice(0, count);
+
+    fontGrid.innerHTML = '';
+    resultsCount.textContent = `${selected.length} found`;
+
+    selected.forEach((font, i) => {
+      const card = document.createElement('div');
+      card.className = 'font-card';
+      card.style.animationDelay = `${i * 80}ms`;
+
+      const styleTag = font.style === 'Serif' ? `<span class="attr-tag attr-serif">${font.style}</span>` :
+                        font.style === 'Monospace' ? `<span class="attr-tag attr-system">${font.style}</span>` :
+                        `<span class="attr-tag attr-sans">${font.style}</span>`;
+      const weightTag = font.weight === 'Bold' ? `<span class="attr-tag attr-bold">Bold</span>` : `<span class="attr-tag attr-regular">Regular</span>`;
+      const embedTag = font.embedded ? `<span class="attr-tag attr-embed">Embedded</span>` : `<span class="attr-tag attr-system">System</span>`;
+      const letter = font.name[0];
+
+      card.innerHTML = `
+        <div class="font-swatch" style="background: linear-gradient(135deg, ${font.color}cc, ${font.color}88)">${letter}</div>
+        <div class="font-meta">
+          <div class="font-name">${font.name}</div>
+          <div class="font-attrs">${styleTag}${weightTag}${embedTag}</div>
+        </div>
+        <div class="font-usage">
+          <div>${font.usage}%</div>
+          <div class="usage-bar"><div class="usage-fill" style="width:0%"></div></div>
+        </div>
+      `;
+
+      fontGrid.appendChild(card);
+
+      // Animate usage bar after paint
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          card.querySelector('.usage-fill').style.width = font.usage + '%';
+        }, 100 + i * 80);
+      });
+    });
+
+    resultsSection.classList.add('visible');
+  }
+</script>
+</body>
+</html>
