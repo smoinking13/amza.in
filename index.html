@@ -149,6 +149,91 @@
                 </div>
             </div>
         </section>
+        <!-- EXPANDABLE ENTERPRISE DETAILS SECTION -->
+<section style="max-width:1100px;margin:80px auto;padding:50px;background:#ffffff;border-radius:20px;border:1px solid #e6e6e6;box-shadow:0 6px 20px rgba(0,0,0,0.05);">
+
+<h2 style="font-size:1.9rem;margin-bottom:25px;color:#111;">
+Enterprise Expertise & Technical Capabilities
+</h2>
+
+<p style="color:#555;line-height:1.8;margin-bottom:25px;">
+AMZA Solutions delivers enterprise-grade Oracle Fusion reporting and intelligent automation architecture tailored for scalable organizations. Explore our technical depth below.
+</p>
+
+<!-- TOGGLE BUTTON 1 -->
+<button onclick="toggleSection('oracleDetails')" 
+style="padding:12px 24px;margin-bottom:15px;background:#0a3d62;color:#fff;border:none;border-radius:30px;cursor:pointer;">
+Explore Oracle Fusion Expertise
+</button>
+
+<div id="oracleDetails" style="display:none;margin-bottom:35px;color:#555;line-height:1.9;">
+
+<p>
+Our Oracle Fusion expertise spans across Financials, HCM, and SCM modules. We specialize in BIP reporting, OTBI analytics, advanced data modeling, and SQL-based custom report development. Our approach focuses on performance optimization, secure role-based access implementation, and structured report delivery channels.
+</p>
+
+<p>
+We design scalable reporting architectures that enable enterprises to extract actionable insights from operational data. By implementing optimized queries, data models, and secure data access strategies, we ensure high availability and minimal performance overhead.
+</p>
+
+<p>
+Our experience includes real-time dashboards, automated report bursting, scheduled delivery pipelines, and compliance-ready reporting systems tailored to enterprise standards.
+</p>
+
+</div>
+
+<!-- TOGGLE BUTTON 2 -->
+<button onclick="toggleSection('automationDetails')" 
+style="padding:12px 24px;margin-bottom:15px;background:#145da0;color:#fff;border:none;border-radius:30px;cursor:pointer;">
+Explore Intelligent Automation Architecture
+</button>
+
+<div id="automationDetails" style="display:none;margin-bottom:35px;color:#555;line-height:1.9;">
+
+<p>
+AMZA Automation Solutions focus on business process optimization through integration-driven architecture. We design workflows that reduce manual intervention, automate approvals, and synchronize enterprise systems efficiently.
+</p>
+
+<p>
+Our automation strategies leverage API-based integrations, event-driven notifications, real-time data sync monitoring, and structured approval hierarchies. These systems enhance productivity while maintaining compliance and audit transparency.
+</p>
+
+<p>
+We architect scalable automation frameworks capable of handling enterprise-level transaction volumes while maintaining system integrity and performance stability.
+</p>
+
+</div>
+
+<!-- TOGGLE BUTTON 3 -->
+<button onclick="toggleSection('engineeringDetails')" 
+style="padding:12px 24px;background:#1b262c;color:#fff;border:none;border-radius:30px;cursor:pointer;">
+Explore Engineering Philosophy & Security
+</button>
+
+<div id="engineeringDetails" style="display:none;color:#555;line-height:1.9;">
+
+<p>
+Security and architectural integrity form the foundation of every solution we design. Our engineering philosophy emphasizes modular design, scalable infrastructure, and performance-optimized execution.
+</p>
+
+<p>
+We follow structured development practices including secure access controls, encryption-ready integration models, audit logging, and compliance-aware system configuration.
+</p>
+
+<p>
+By combining enterprise reporting intelligence with automation architecture, AMZA Solutions delivers technology systems that are secure, reliable, and future-ready.
+</p>
+
+</div>
+
+</section>
+
+<script>
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "none" ? "block" : "none";
+}
+</script>
     </main>
 
     <footer class="footer">
