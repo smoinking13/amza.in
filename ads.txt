@@ -1,1 +1,4 @@
 google.com, pub-4012292361035245, DIRECT, f08c47fec0942fa0
+adsterra.com, 28786045, DIRECT
+adsterra.com, 28786038, DIRECT
+adsterra.com, 28786053, DIRECT
