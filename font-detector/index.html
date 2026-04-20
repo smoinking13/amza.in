@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX"
+crossorigin="anonymous"></script>
 <title>Font Detector – Identify Fonts From PDF & Word Files</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -68,7 +70,7 @@
     border: 1px solid rgba(108,63,255,0.25);
     border-radius: 100px;
     padding: 6px 18px;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -77,17 +79,16 @@
     backdrop-filter: blur(10px);
   }
 
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(32px, 5vw, 58px);
-    font-weight: 800;
-    line-height: 1.1;
-    color: var(--text);
-    letter-spacing: -0.02em;
-    max-width: 680px;
-    margin: 0 auto 16px;
-  }
-
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(24px, 3.4vw, 42px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--text);
+  letter-spacing: -0.015em;
+  max-width: 680px;
+  margin: 0 auto 14px;
+}
   h1 span {
     background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 100%);
     -webkit-background-clip: text;
@@ -96,7 +97,7 @@
   }
 
   .subtitle {
-    font-size: 17px;
+    font-size: 14px;
     color: var(--muted);
     font-weight: 300;
     max-width: 420px;
@@ -497,13 +498,43 @@
     body { padding: 28px 14px 60px; }
     .card { padding: 26px 20px; }
     .dropzone { padding: 38px 20px; }
-    h1 { font-size: 30px; }
+    h1 { font-size: 24px; }
     .font-card { padding: 14px 16px; }
     .font-swatch { width: 40px; height: 40px; font-size: 18px; }
   }
 </style>
 </head>
 <body>
+<!-- ===== ABOVE TOOL: What is Font Detector ===== -->
+<section class="info-section" style="
+  width: 100%;
+  max-width: 620px;
+  margin-bottom: 36px;
+">
+  <h2 style="
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  ">What is Font Detector?</h2>
+  <p style="
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 10px;
+  ">
+    Font Detector is a free, browser-based tool that lets you instantly identify all the fonts used inside a PDF or Word document. Whether you're a designer trying to match a brand's typography, a developer auditing a document, or simply curious about a typeface — this tool gives you a clear, accurate list of every font embedded in your file.
+  </p>
+  <p style="
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+  ">
+    Everything runs directly in your browser. Your files are never uploaded to any server, so your documents stay completely private.
+  </p>
+</section>
 
 <!-- Background blobs -->
 <div class="blob blob-1"></div>
@@ -588,11 +619,18 @@
 
 <!-- Footer -->
 <footer>
-  <p>Works entirely in your browser · No file is uploaded to any server</p>
-  <p style="margin-top:6px;">Made with ❤ by <a href="#">FontDetector.app</a></p>
+  <p>Runs entirely in your browser · Your files never leave your device</p>
+  <p style="margin-top:6px;">Privacy-first design · No uploads · No data stored</p>
+  <p style="margin-top:6px;">Crafted with care & ❤ by <a href="#">FontDetector.app</a></p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
   const fileInfo = document.getElementById('fileInfo');
@@ -616,6 +654,7 @@
   ];
 
   let hasFile = false;
+  let _lastFile = null;
 
   // Drag and drop
   dropzone.addEventListener('click', () => fileInput.click());
@@ -653,6 +692,7 @@
       return;
     }
     hasFile = true;
+    _lastFile = file;
     fileName.textContent = file.name;
     fileInfo.classList.add('visible');
     detectBtn.disabled = false;
@@ -662,6 +702,7 @@
 
   function clearFile() {
     hasFile = false;
+    _lastFile = null;
     fileInput.value = '';
     fileInfo.classList.remove('visible');
     detectBtn.disabled = true;
@@ -686,18 +727,56 @@
   `;
   document.head.appendChild(shakeStyle);
 
-  detectBtn.addEventListener('click', () => {
+  detectBtn.addEventListener('click', async () => {
     if (!hasFile || detectBtn.disabled) return;
 
     detectBtn.classList.add('loading');
     detectBtn.disabled = true;
     resultsSection.classList.remove('visible');
 
-    setTimeout(() => {
-      detectBtn.classList.remove('loading');
-      detectBtn.disabled = false;
-      showResults();
-    }, 2200);
+    const selectedFile = fileInput.files[0] || _lastFile;
+    const ext = selectedFile ? selectedFile.name.split('.').pop().toLowerCase() : '';
+
+    if (ext === 'docx') {
+      try {
+        const fonts = await extractDocxFonts(selectedFile);
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        renderRealFonts(fonts);
+      } catch (err) {
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        renderRealFonts([]);
+      }
+    } else if (ext === 'pdf') {
+      try {
+        const fonts = await extractPdfFonts(selectedFile);
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        renderRealFonts(fonts);
+      } catch (err) {
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        renderRealFonts([]);
+      }
+    } else if (ext === 'doc') {
+      try {
+        const fonts = await extractDocFonts(selectedFile);
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        renderRealFonts(fonts);
+      } catch (err) {
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        renderRealFonts([]);
+      }
+    } else {
+      setTimeout(() => {
+        detectBtn.classList.remove('loading');
+        detectBtn.disabled = false;
+        showResults();
+      }, 2200);
+    }
   });
 
   function showResults() {
@@ -744,6 +823,359 @@
 
     resultsSection.classList.add('visible');
   }
+  async function extractPdfFonts(file) {
+    const fonts = new Set();
+
+    // ── Method 1: Raw byte scan (most reliable, works on all PDFs) ──────────
+    // PDF font names are stored as plain ASCII in the file structure.
+    // We scan for /BaseFont and /FontName dictionary entries directly.
+    const arrayBuffer = await file.arrayBuffer();
+    const raw = new TextDecoder('latin1').decode(new Uint8Array(arrayBuffer));
+
+    // Match /BaseFont /FontName
+    for (const match of raw.matchAll(/\/BaseFont\s*\/([A-Za-z0-9+_\-,.]+)/g)) {
+      let name = match[1].trim();
+      // Strip subset prefix like "ABCDEF+FontName" → "FontName"
+      if (/^[A-Z]{6}\+/.test(name)) name = name.slice(7);
+      if (name.length >= 2) fonts.add(name);
+    }
+
+    // Match /FontName inside font descriptor dicts
+    for (const match of raw.matchAll(/\/FontName\s*\/([A-Za-z0-9+_\-,.]+)/g)) {
+      let name = match[1].trim();
+      if (/^[A-Z]{6}\+/.test(name)) name = name.slice(7);
+      if (name.length >= 2) fonts.add(name);
+    }
+
+    // Match /FontFamily strings
+    for (const match of raw.matchAll(/\/FontFamily\s*\(([^)]+)\)/g)) {
+      const name = match[1].trim();
+      if (name.length >= 2) fonts.add(name);
+    }
+
+    // ── Method 2: PDF.js operator list scan (catches dynamic/form fonts) ────
+    // Uses a fresh arrayBuffer since the first read was decoded above
+    try {
+      const arrayBuffer2 = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({
+        data: arrayBuffer2,
+        useWorkerFetch: false,
+        isEvalSupported: false,
+        useSystemFonts: false,
+      }).promise;
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        // getOperatorList forces PDF.js to resolve and cache all font resources
+        await page.getOperatorList();
+
+        // After operator list is built, PDF.js 3.x stores resolved font data in commonObjs
+        const objs = page.commonObjs;
+        if (objs && objs._objs) {
+          for (const entry of Object.values(objs._objs)) {
+            if (!entry || !entry.data) continue;
+            const candidate = entry.data.name || entry.data.fontName || '';
+            if (candidate.length >= 2) {
+              let cleaned = candidate;
+              if (/^[A-Z]{6}\+/.test(cleaned)) cleaned = cleaned.slice(7);
+              fonts.add(cleaned);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // PDF.js scan failed silently — raw scan results are still valid
+    }
+
+    // ── Clean up: remove internal keys and garbage strings ──────────────────
+    return [...fonts].filter(name => {
+      if (/^[Gg]_/.test(name)) return false;       // PDF.js internal keys
+      if (name.length < 2 || name.length > 80) return false;
+      if (!/^[A-Za-z]/.test(name)) return false;   // must start with a letter
+      return true;
+    });
+  }
+
+  async function extractDocFonts(file) {
+    // DOC is binary OLE2 format — extract font names via regex scan of raw bytes
+    const arrayBuffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+
+    // Decode as latin1 to preserve byte values
+    const text = new TextDecoder('latin1').decode(bytes);
+
+    const fonts = new Set();
+
+    // Common font name patterns stored as UTF-16LE in .doc binary
+    // Re-encode pairs of chars back to readable ASCII
+    const utf16Scan = () => {
+      for (let i = 0; i < bytes.length - 1; i++) {
+        if (bytes[i + 1] === 0 && bytes[i] >= 0x20 && bytes[i] < 0x7f) {
+          let word = '';
+          let j = i;
+          while (j < bytes.length - 1 && bytes[j + 1] === 0 && bytes[j] >= 0x20 && bytes[j] < 0x7f) {
+            word += String.fromCharCode(bytes[j]);
+            j += 2;
+          }
+          if (word.length >= 3 && /^[A-Za-z]/.test(word) && isLikelyFontName(word)) {
+            fonts.add(word);
+          }
+          i = j;
+        }
+      }
+    };
+
+    // Also scan raw latin1 for readable font name strings
+    const latin1Scan = () => {
+      const matches = text.matchAll(/([A-Z][a-zA-Z]+(?: [A-Za-z]+){0,3}(?:[ \-](?:Regular|Bold|Italic|Light|Medium|Semibold|Black|Thin|Narrow|Condensed|MT|PS|LT|Pro|Std))*)/g);
+      for (const match of matches) {
+        const candidate = match[1].trim();
+        if (candidate.length >= 3 && candidate.length <= 64 && isLikelyFontName(candidate)) {
+          fonts.add(candidate);
+        }
+      }
+    };
+
+    utf16Scan();
+    latin1Scan();
+
+    return [...fonts].slice(0, 40); // cap to avoid noise
+  }
+
+  function isLikelyFontName(str) {
+    // Filter out common false positives
+    const noise = ['Normal','Default','Table','Style','Font','Body','Heading','List','Caption',
+      'Title','Subtitle','Quote','Author','Date','Text','Line','Page','Word','File','Open',
+      'Save','Insert','Format','View','Edit','Help','Window','Tools'];
+    if (noise.some(n => str === n)) return false;
+    // Must contain at least one lowercase letter (real font names aren't all-caps words)
+    if (!/[a-z]/.test(str)) return false;
+    // Reasonable length
+    if (str.length < 3 || str.length > 60) return false;
+    return true;
+  }
+
+  const accentColors = ['#6c3fff','#ff5c87','#00d4b4','#f59e0b','#e94080','#7c3aed','#0891b2','#059669','#dc2626','#7c3aed'];
+
+  function renderRealFonts(fonts) {
+    fontGrid.innerHTML = '';
+
+    if (!fonts || !fonts.length) {
+      resultsCount.textContent = 'No fonts detected';
+      fontGrid.innerHTML = `<div style="text-align:center;padding:32px 20px;color:var(--muted);font-size:14px;">
+        No fonts could be detected in this file. The file may use system fonts, be image-based, or the format may limit font data extraction.
+      </div>`;
+      resultsSection.classList.add('visible');
+      return;
+    }
+
+    resultsCount.textContent = `${fonts.length} found`;
+
+    fonts.forEach((font, i) => {
+      const card = document.createElement('div');
+      card.className = 'font-card';
+      card.style.animationDelay = `${i * 60}ms`;
+
+      const color = accentColors[i % accentColors.length];
+      const letter = font[0].toUpperCase();
+
+      card.innerHTML = `
+        <div class="font-swatch" style="background: linear-gradient(135deg, ${color}cc, ${color}88)">${letter}</div>
+        <div class="font-meta">
+          <div class="font-name">${font}</div>
+          <div class="font-attrs"><span class="attr-tag attr-embed">Detected</span></div>
+        </div>
+      `;
+
+      fontGrid.appendChild(card);
+    });
+
+    resultsSection.classList.add('visible');
+  }
+
+  async function extractDocxFonts(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+
+    const fonts = new Set();
+
+    // Scan all relevant XML sources where fonts can be declared
+    const xmlSources = [
+      "word/document.xml",   // inline font overrides per run
+      "word/styles.xml",     // named styles (Normal, Heading, etc.)
+      "word/settings.xml",   // document default fonts
+      "word/fontTable.xml",  // full font table — most reliable source
+    ];
+
+    for (const source of xmlSources) {
+      const xmlFile = zip.file(source);
+      if (!xmlFile) continue;
+      const xml = await xmlFile.async("string");
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xml, "application/xml");
+
+      const nodes = doc.getElementsByTagName("*");
+
+      for (let node of nodes) {
+        // Catch w:rFonts — per-run font declarations
+        if (node.nodeName.includes("rFonts")) {
+          const font =
+            node.getAttribute("w:ascii") ||
+            node.getAttribute("w:hAnsi") ||
+            node.getAttribute("w:cs") ||
+            node.getAttribute("w:eastAsia");
+          if (font) fonts.add(font);
+        }
+
+        // Catch w:defaultFonts — document-level default (Settings.xml)
+        if (node.nodeName.includes("defaultFonts")) {
+          const font =
+            node.getAttribute("w:ascii") ||
+            node.getAttribute("w:hAnsi") ||
+            node.getAttribute("w:cs") ||
+            node.getAttribute("w:eastAsia");
+          if (font) fonts.add(font);
+        }
+
+        // Catch w:font — fontTable.xml entries (font name as w:name attribute)
+        if (node.nodeName.includes(":font") || node.nodeName === "w:font") {
+          const font = node.getAttribute("w:name");
+          if (font) fonts.add(font);
+        }
+      }
+    }
+
+    return [...fonts];
+  }
 </script>
+<!-- ===== BELOW TOOL: How to Use, Why Use, Supported Types, Limitations ===== -->
+<div style="
+  width: 100%;
+  max-width: 620px;
+  margin-top: 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+">
+
+  <!-- How to Use -->
+  <section>
+    <h2 style="
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    ">How to Use the Font Detector</h2>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 14px;">
+      Using this tool is quick and straightforward — no account, no installation required.
+    </p>
+    <ol style="
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.9;
+      padding-left: 22px;
+    ">
+      <li><strong style="color: var(--text);">Upload your file</strong> — drag and drop a PDF or DOCX file onto the upload area, or click to browse your device.</li>
+      <li><strong style="color: var(--text);">Click "Detect Fonts"</strong> — the tool will scan your document and extract all font data instantly.</li>
+      <li><strong style="color: var(--text);">Review the results</strong> — a list of all detected fonts will appear, showing each font name along with any available style details.</li>
+    </ol>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-top: 14px;">
+      The entire process takes just a few seconds, even for large documents.
+    </p>
+  </section>
+
+  <!-- Why Use This Tool -->
+  <section>
+    <h2 style="
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    ">Why Use This Tool?</h2>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 14px;">
+      Fonts play a major role in how documents look and feel. Identifying them shouldn't require expensive software or technical expertise. Here's why people find this tool useful:
+    </p>
+    <ul style="
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.9;
+      padding-left: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    ">
+      <li><strong style="color: var(--text);">Design consistency</strong> — quickly identify fonts in client files to match them in your own designs.</li>
+      <li><strong style="color: var(--text);">Brand auditing</strong> — check whether a document uses the correct brand typefaces before publishing.</li>
+      <li><strong style="color: var(--text);">Print preparation</strong> — verify that all fonts are properly embedded before sending files to a printer.</li>
+      <li><strong style="color: var(--text);">Document analysis</strong> — understand the typography structure of any file for archiving or editing purposes.</li>
+      <li><strong style="color: var(--text);">100% private</strong> — since processing happens in the browser, your sensitive documents are never sent anywhere.</li>
+    </ul>
+  </section>
+
+  <!-- Supported File Types -->
+  <section>
+    <h2 style="
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    ">Supported File Types</h2>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 14px;">
+      Font Detector currently supports the two most common document formats used by professionals and individuals alike:
+    </p>
+    <ul style="
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.9;
+      padding-left: 22px;
+    ">
+      <li><strong style="color: var(--text);">PDF (.pdf)</strong> — Portable Document Format files are scanned using both raw byte analysis and a PDF rendering engine for maximum accuracy. Embedded fonts, subsets, and font descriptors are all detected.</li>
+      <li><strong style="color: var(--text);">Word Documents (.docx)</strong> — Modern Microsoft Word files are parsed directly from their internal XML structure, pulling font data from styles, runs, and the document's font table for a complete picture.</li>
+    </ul>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-top: 14px;">
+      Support for additional formats may be added in the future. If you have a suggestion, feel free to share your feedback.
+    </p>
+  </section>
+
+  <!-- Limitations -->
+  <section style="margin-bottom: 20px;">
+    <h2 style="
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    ">Known Limitations</h2>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 14px;">
+      While Font Detector works well for most standard documents, there are a few cases where results may be incomplete:
+    </p>
+    <ul style="
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.9;
+      padding-left: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    ">
+      <li><strong style="color: var(--text);">Scanned or image-based PDFs</strong> — if a PDF contains only scanned images with no actual text layer, fonts cannot be detected.</li>
+      <li><strong style="color: var(--text);">Older .doc files</strong> — legacy Word files (.doc) use a binary format that is harder to parse reliably. Using a .docx version of the same file will yield better results.</li>
+      <li><strong style="color: var(--text);">System fonts</strong> — some documents reference system fonts by name without embedding them. These may still appear in results, but the font file itself isn't stored inside the document.</li>
+      <li><strong style="color: var(--text);">Heavily encrypted PDFs</strong> — password-protected PDFs with strict permissions may block font data from being read.</li>
+    </ul>
+    <p style="font-size: 15px; color: var(--muted); line-height: 1.75; margin-top: 14px;">
+      For best results, use unprotected PDF or DOCX files with embedded fonts and an actual text layer.
+    </p>
+  </section>
+
+</div>
 </body>
 </html>
