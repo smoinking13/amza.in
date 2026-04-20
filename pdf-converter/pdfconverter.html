@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4012292361035245"
+     crossorigin="anonymous"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMZA Tools – Free Online File & Image Utilities</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f1ec;
+    --surface: #fdfcfa;
+    --surface2: #f0ede7;
+    --border: #e2ddd6;
+    --ink: #1a1714;
+    --ink2: #6b6560;
+    --ink3: #9c9590;
+    --accent: #c8521a;
+    --accent2: #e8703a;
+    --accent-light: #fdf0e8;
+    --green: #2d7d52;
+    --green-light: #e8f5ee;
+    --blue: #1e5fa8;
+    --blue-light: #e8f0fb;
+    --purple: #6b3fa0;
+    --purple-light: #f0eafa;
+    --shadow: 0 2px 8px rgba(26,23,20,0.08);
+    --shadow-lg: 0 8px 32px rgba(26,23,20,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--ink); }
+  .header-sub {
+    font-size: 0.8rem;
+    color: var(--ink3);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* USAGE BADGE */
+  .usage-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink2);
+  }
+  .usage-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .usage-dot.warning { background: #d97706; }
+  .usage-dot.danger { background: #dc2626; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #1a1714 0%, #2d2520 100%);
+    color: #fff;
+    text-align: center;
+    padding: 64px 24px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 120%, rgba(200,82,26,0.3) 0%, transparent 70%);
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent2); }
+  .hero p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .hero-pills {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  .pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.03em;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* LIMIT BANNER */
+  .limit-banner {
+    display: none;
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    color: #991b1b;
+    font-weight: 500;
+    font-size: 0.92rem;
+    text-align: center;
+  }
+  .limit-banner.show { display: block; }
+
+  /* TOOL CARD */
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .tool-card:hover { box-shadow: var(--shadow-lg); }
+
+  .tool-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tool-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .tool-icon.orange { background: var(--accent-light); }
+  .tool-icon.green { background: var(--green-light); }
+  .tool-icon.purple { background: var(--purple-light); }
+
+  .tool-title { font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+  .tool-desc { font-size: 0.82rem; color: var(--ink3); margin-top: 2px; }
+
+  .tool-body { padding: 28px; }
+
+  /* DROP ZONE */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.dragging {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .drop-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+  .drop-label { font-weight: 600; color: var(--ink2); font-size: 0.95rem; }
+  .drop-hint { font-size: 0.8rem; color: var(--ink3); margin-top: 4px; }
+
+  /* PREVIEW GRID */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .preview-item {
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    aspect-ratio: 1;
+  }
+  .preview-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .preview-remove {
+    position: absolute;
+    top: 5px; right: 5px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(220,38,38,0.85);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.15s;
+  }
+  .preview-remove:hover { background: #dc2626; }
+  .preview-name {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(26,23,20,0.72);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 3px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) { background: #a84115; }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover:not(:disabled) { background: var(--border); }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover:not(:disabled) { background: #235f3e; }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--surface2);
+    border-radius: 999px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 14px;
+    display: none;
+  }
+  .progress-bar-wrap.show { display: block; }
+  .progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 0.78rem;
+    color: var(--ink3);
+    margin-top: 6px;
+    display: none;
+  }
+  .progress-label.show { display: block; }
+
+  /* TEXT OUTPUT */
+  .text-output {
+    width: 100%;
+    min-height: 160px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--ink);
+    background: var(--surface2);
+    resize: vertical;
+    line-height: 1.6;
+    margin-top: 16px;
+    transition: border-color 0.2s;
+  }
+  .text-output:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  /* PDF PAGE PREVIEWS */
+  .pdf-pages {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .pdf-page-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--surface2);
+  }
+  .pdf-page-item canvas {
+    width: 100%;
+    display: block;
+  }
+  .pdf-page-item .page-footer {
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--ink3);
+    border-top: 1px solid var(--border);
+  }
+  .page-dl-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--blue);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .page-dl-btn:hover { background: var(--blue-light); }
+
+  /* TOAST */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.25s ease;
+    max-width: 280px;
+  }
+  .toast.success { background: var(--green); }
+  .toast.error { background: #dc2626; }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* STATUS */
+  .status-msg {
+    font-size: 0.82rem;
+    margin-top: 12px;
+    color: var(--ink2);
+    min-height: 18px;
+  }
+  .status-msg.success { color: var(--green); font-weight: 600; }
+  .status-msg.error { color: #dc2626; font-weight: 600; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink3);
+    margin-bottom: 10px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 28px 24px;
+    font-size: 0.82rem;
+  }
+  footer a {
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  footer a:hover { color: #fff; }
+  .footer-links { margin-bottom: 10px; }
+  .footer-privacy {
+    max-width: 620px;
+    margin: 0 auto 12px;
+    color: rgba(255,255,255,0.38);
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .header-sub { display: none; }
+    .tool-body { padding: 20px 16px; }
+    .tool-header { padding: 18px 16px; }
+    .hero { padding: 44px 16px 36px; }
+    main { padding: 28px 12px 48px; }
+  }
+
+  /* LOADING SPINNER */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .file-name-display {
+    margin-top: 12px;
+    font-size: 0.82rem;
+    color: var(--ink2);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">AMZA<span> Tools</span></div>
+    </div>
+    <div class="header-sub" style="display:none;max-width:260px;text-align:center">Free Online File & Image Utilities</div>
+    <div class="usage-badge">
+      <div class="usage-dot" id="usageDot"></div>
+      <span id="usageText">0/5 used today</span>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>Free Online<br><em>File & Image</em> Utilities</h1>
+    <p>Convert, extract, and transform your files instantly — all processing happens in your browser. No uploads to servers.</p>
+    <div class="hero-pills">
+      <span class="pill">🔒 100% Private</span>
+      <span class="pill">⚡ Browser-Powered</span>
+      <span class="pill">🆓 Free to Use</span>
+      <span class="pill">📱 Mobile Friendly</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- MAIN -->
+<main>
+
+  <!-- LIMIT BANNER -->
+  <div class="limit-banner" id="limitBanner">
+    🚫 Daily free limit reached (5 tasks/day). Please try again tomorrow. Your limit resets at midnight.
+  </div>
+
+  <!-- TOOL 1: Image → PDF -->
+  <div class="tool-card" id="card-img2pdf">
+    <div class="tool-header">
+      <div class="tool-icon orange">🖼️</div>
+      <div>
+        <div class="tool-title">Image → PDF</div>
+        <div class="tool-desc">Combine multiple images into a single PDF document</div>
+      </div>
+    </div>
+    <div class="tool-body">
+      <div class="section-label">Upload Images</div>
+      <div class="drop-zone" id="imgDropZone">
+        <input type="file" id="imgInput" accept="image/*" multiple>
+        <span class="drop-icon">📁</span>
+        <div class="drop-label">Drag & drop images here</div>
+        <div class="drop-hint">or click to browse · JPG, PNG, WEBP, GIF · Multiple files supported</div>
+      </div>
+      <div class="preview-grid" id="imgPreviewGrid"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="convertImgBtn" disabled>
+          ⚡ Convert to PDF
+        </button>
+        <button class="btn btn-secondary" id="clearImgBtn" style="display:none">Clear All</button>
+      </div>
+      <div class="progress-bar-wrap" id="imgProgress">
+        <div class="progress-bar" id="imgProgressBar"></div>
+      </div>
+      <div class="status-msg" id="imgStatus"></div>
+    </div>
+  </div>
+
+  <!-- TOOL 2: PDF → Image -->
+  <div class="tool-card" id="card-pdf2img">
+    <div class="tool-header">
+      <div class="tool-icon green">📄</div>
+      <div>
+        <div class="tool-title">PDF → Images</div>
+        <div class="tool-desc">Convert each PDF page to a downloadable image</div>
+      </div>
+    </div>
+    <div class="tool-body">
+      <div class="section-label">Upload PDF</div>
+      <div class="drop-zone" id="pdfDropZone">
+        <input type="file" id="pdfInput" accept="application/pdf">
+        <span class="drop-icon">📄</span>
+        <div class="drop-label">Drag & drop your PDF here</div>
+        <div class="drop-hint">or click to browse · PDF only</div>
+      </div>
+      <div class="file-name-display" id="pdfFileName"></div>
+      <div class="btn-row">
+        <button class="btn btn-green" id="convertPdfBtn" disabled>
+          ⚡ Convert Pages to Images
+        </button>
+      </div>
+      <div class="progress-bar-wrap" id="pdfProgress">
+        <div class="progress-bar" id="pdfProgressBar"></div>
+      </div>
+      <div class="progress-label" id="pdfProgressLabel"></div>
+      <div class="pdf-pages" id="pdfPages"></div>
+      <div class="status-msg" id="pdfStatus"></div>
+    </div>
+  </div>
+
+  <!-- TOOL 3: Image → Text (OCR) -->
+  <div class="tool-card" id="card-ocr">
+    <div class="tool-header">
+      <div class="tool-icon purple">🔍</div>
+      <div>
+        <div class="tool-title">Image → Text (OCR)</div>
+        <div class="tool-desc">Extract text from images using optical character recognition</div>
+      </div>
+    </div>
+    <div class="tool-body">
+      <div class="section-label">Upload Image</div>
+      <div class="drop-zone" id="ocrDropZone">
+        <input type="file" id="ocrInput" accept="image/*">
+        <span class="drop-icon">🔍</span>
+        <div class="drop-label">Drag & drop an image here</div>
+        <div class="drop-hint">or click to browse · JPG, PNG, WEBP, BMP, etc.</div>
+      </div>
+      <div class="file-name-display" id="ocrFileName"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="ocrBtn" disabled style="background:var(--purple)">
+          🔍 Extract Text
+        </button>
+      </div>
+      <div class="progress-bar-wrap" id="ocrProgress">
+        <div class="progress-bar" id="ocrProgressBar" style="background:linear-gradient(90deg,var(--purple),#9b6ed0)"></div>
+      </div>
+      <div class="progress-label" id="ocrProgressLabel"></div>
+      <textarea class="text-output" id="ocrOutput" placeholder="Extracted text will appear here…" readonly></textarea>
+      <div class="btn-row" id="ocrActions" style="display:none">
+        <button class="btn btn-secondary" id="copyTextBtn">📋 Copy Text</button>
+        <button class="btn btn-secondary" id="editToggleBtn">✏️ Enable Editing</button>
+      </div>
+      <div class="status-msg" id="ocrStatus"></div>
+    </div>
+  </div>
+
+<!-- INFO SECTION -->
+<section style="margin-top:48px;padding:40px 36px;background:#ffffff;border-radius:16px;border:1px solid #e5e5e5;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+
+  <h2 style="font-size:1.7rem;margin-bottom:8px;color:#111;">What Can You Do with AMZA Tools?</h2>
+  <p style="line-height:1.8;color:#555;margin-bottom:28px;">
+    AMZA Tools gives you three handy utilities in one place — completely free, with no sign-up required.
+    Everything runs inside your browser, so your files stay on your device and are never sent to any server.
+  </p>
+
+  <h3 style="color:#c8521a;margin-bottom:8px;">🖼️ Image to PDF</h3>
+  <p style="line-height:1.8;color:#555;margin-bottom:8px;">
+    Turn one or more photos into a single PDF in seconds. Great for combining scanned pages,
+    submitting assignments, or creating a photo album to share.
+  </p>
+  <p style="line-height:1.8;color:#555;margin-bottom:24px;"><strong>How to use:</strong> Drag your images into the upload box → click <em>Convert to PDF</em> → your PDF downloads automatically.</p>
+
+  <h3 style="color:#2d7d52;margin-bottom:8px;">📄 PDF to Images</h3>
+  <p style="line-height:1.8;color:#555;margin-bottom:8px;">
+    Need just one page from a long PDF? Convert each page into a high-quality PNG image and save only the ones you need.
+    Useful for presentations, social posts, or sharing specific slides.
+  </p>
+  <p style="line-height:1.8;color:#555;margin-bottom:24px;"><strong>How to use:</strong> Upload your PDF → click <em>Convert Pages to Images</em> → preview all pages and download individually.</p>
+
+  <h3 style="color:#6b3fa0;margin-bottom:8px;">🔍 Image to Text (OCR)</h3>
+  <p style="line-height:1.8;color:#555;margin-bottom:8px;">
+    Have a screenshot, photo of a document, or a scanned page with text you need to copy? OCR reads the text from
+    your image and gives you editable, copyable content instantly.
+  </p>
+  <p style="line-height:1.8;color:#555;margin-bottom:32px;"><strong>How to use:</strong> Upload an image → click <em>Extract Text</em> → copy or edit the recognised text.</p>
+
+  <h2 style="font-size:1.4rem;margin-bottom:12px;color:#111;">Who Uses These Tools?</h2>
+  <ul style="line-height:2;color:#555;margin-left:20px;margin-bottom:28px;">
+    <li><strong>Students</strong> — scan handwritten notes, convert photos of assignments into a PDF, or extract text from textbook images.</li>
+    <li><strong>Office workers</strong> — pull specific pages from a report, or digitise printed memos into editable text.</li>
+    <li><strong>Freelancers &amp; designers</strong> — export PDF previews as images for client approvals or social media.</li>
+    <li><strong>Researchers</strong> — digitise printed documents or turn image-based PDFs into searchable text.</li>
+    <li><strong>Everyday users</strong> — anyone who needs a quick file conversion without installing software.</li>
+  </ul>
+
+  <h2 style="font-size:1.4rem;margin-bottom:12px;color:#111;">Supported File Formats</h2>
+  <ul style="line-height:2;color:#555;margin-left:20px;margin-bottom:28px;">
+    <li><strong>Image to PDF:</strong> JPG, PNG, WEBP, GIF — upload multiple files at once</li>
+    <li><strong>PDF to Images:</strong> Any standard PDF — outputs one PNG per page</li>
+    <li><strong>OCR:</strong> JPG, PNG, WEBP, BMP and most common image types</li>
+  </ul>
+
+  <h2 style="font-size:1.4rem;margin-bottom:12px;color:#111;">🔒 Your Privacy Matters</h2>
+  <p style="line-height:1.8;color:#555;margin-bottom:28px;">
+    All conversions happen directly in your browser — nothing is uploaded to our servers.
+    Your files are never stored, shared, or seen by anyone else. No account is needed.
+    It is safe to use even for sensitive documents like contracts, medical records, or personal notes.
+  </p>
+
+  <h2 style="font-size:1.4rem;margin-bottom:16px;color:#111;">Frequently Asked Questions</h2>
+
+  <p style="margin-bottom:14px;line-height:1.8;color:#444;">
+    <strong>Is it really free?</strong><br>
+    Yes. All three tools are free with a daily limit of 5 conversions to keep the service running smoothly for everyone.
+  </p>
+  <p style="margin-bottom:14px;line-height:1.8;color:#444;">
+    <strong>Do I need to create an account?</strong><br>
+    No sign-up, no email — just open the page and start converting.
+  </p>
+  <p style="margin-bottom:14px;line-height:1.8;color:#444;">
+    <strong>Will my file quality be reduced?</strong><br>
+    Images are scaled proportionally and PDFs are rendered at high resolution, so quality is well preserved in normal use.
+  </p>
+  <p style="margin-bottom:14px;line-height:1.8;color:#444;">
+    <strong>Does OCR work on handwritten text?</strong><br>
+    OCR works best on clearly printed text. Handwriting can be recognised but accuracy depends on how legible the writing is.
+  </p>
+  <p style="line-height:1.8;color:#444;">
+    <strong>Can I use it on my phone?</strong><br>
+    Yes, AMZA Tools is fully mobile-friendly. You can upload images from your phone's camera roll and download results directly.
+  </p>
+
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://www.amza.in/about">About</a>
+    <a href="https://www.amza.in/privacy">Privacy Policy</a>
+       <a href="khawaja@amza.in">Contact</a>
+	   <a href="pdfservice.html">Our Services</a>
+  </div>
+  <div class="footer-privacy">
+    This privacy policy applies to all services and subdomains of amza.in including tools such as Font Detector, PDF Converter, Population Counter, and other features hosted on this domain.
+  </div>
+  <div>© 2025 AMZA Tools. All processing done locally in your browser.</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- EXTERNAL LIBS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+// ─── DAILY LIMIT ─────────────────────────────────────────────────────────────
+const LIMIT = 5;
+function getUsage() {
+  const today = new Date().toDateString();
+  const stored = JSON.parse(localStorage.getItem('amza_usage') || '{}');
+  if (stored.date !== today) return { date: today, count: 0 };
+  return stored;
+}
+function saveUsage(usage) {
+  localStorage.setItem('amza_usage', JSON.stringify(usage));
+}
+function incrementUsage() {
+  const u = getUsage();
+  u.count++;
+  saveUsage(u);
+  renderUsage();
+  return u.count;
+}
+function isLimited() {
+  return getUsage().count >= LIMIT;
+}
+function renderUsage() {
+  const u = getUsage();
+  const dot = document.getElementById('usageDot');
+  const txt = document.getElementById('usageText');
+  const banner = document.getElementById('limitBanner');
+  txt.textContent = `${u.count}/${LIMIT} used today`;
+  dot.className = 'usage-dot';
+  if (u.count >= LIMIT) {
+    dot.classList.add('danger');
+    banner.classList.add('show');
+    disableAllButtons();
+  } else if (u.count >= 3) {
+    dot.classList.add('warning');
+  }
+}
+function disableAllButtons() {
+  ['convertImgBtn','convertPdfBtn','ocrBtn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = true;
+  });
+}
+function checkLimitBeforeAction() {
+  if (isLimited()) {
+    showToast('Daily limit reached. Try again tomorrow.', 'error');
+    return false;
+  }
+  return true;
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ─── DRAG & DROP HELPER ───────────────────────────────────────────────────────
+function setupDragDrop(zone) {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragging'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragging'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragging');
+    const input = zone.querySelector('input[type="file"]');
+    const files = e.dataTransfer.files;
+    const dt = new DataTransfer();
+    for (const f of files) dt.items.add(f);
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+}
+
+// ─── TOOL 1: IMAGE → PDF ─────────────────────────────────────────────────────
+const imgFiles = [];
+const imgInput = document.getElementById('imgInput');
+const imgGrid = document.getElementById('imgPreviewGrid');
+const convertImgBtn = document.getElementById('convertImgBtn');
+const clearImgBtn = document.getElementById('clearImgBtn');
+const imgStatus = document.getElementById('imgStatus');
+const imgProgressWrap = document.getElementById('imgProgress');
+const imgProgressBar = document.getElementById('imgProgressBar');
+
+setupDragDrop(document.getElementById('imgDropZone'));
+
+imgInput.addEventListener('change', () => {
+  const files = Array.from(imgInput.files);
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    imgFiles.push(file);
+    const item = document.createElement('div');
+    item.className = 'preview-item';
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'preview-remove';
+    removeBtn.innerHTML = '✕';
+    const idx = imgFiles.length - 1;
+    removeBtn.addEventListener('click', () => {
+      imgFiles.splice(imgFiles.indexOf(file), 1);
+      item.remove();
+      updateImgUI();
+    });
+    const nameTag = document.createElement('div');
+    nameTag.className = 'preview-name';
+    nameTag.textContent = file.name;
+    nameTag.title = file.name;
+    item.appendChild(img);
+    item.appendChild(removeBtn);
+    item.appendChild(nameTag);
+    imgGrid.appendChild(item);
+  });
+  imgInput.value = '';
+  updateImgUI();
+});
+
+function updateImgUI() {
+  const hasFiles = imgFiles.length > 0;
+  convertImgBtn.disabled = !hasFiles || isLimited();
+  clearImgBtn.style.display = hasFiles ? '' : 'none';
+  if (!hasFiles) imgStatus.textContent = '';
+}
+
+clearImgBtn.addEventListener('click', () => {
+  imgFiles.length = 0;
+  imgGrid.innerHTML = '';
+  updateImgUI();
+});
+
+convertImgBtn.addEventListener('click', async () => {
+  if (!checkLimitBeforeAction()) return;
+  if (!imgFiles.length) return;
+
+  convertImgBtn.disabled = true;
+  convertImgBtn.innerHTML = '<span class="spinner"></span> Processing…';
+  imgProgressWrap.classList.add('show');
+  imgStatus.textContent = '';
+  imgStatus.className = 'status-msg';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'px', hotfixes: ['px_scaling'] });
+    let firstPage = true;
+
+    for (let i = 0; i < imgFiles.length; i++) {
+      const file = imgFiles[i];
+      const pct = Math.round(((i) / imgFiles.length) * 100);
+      imgProgressBar.style.width = pct + '%';
+
+      const dataUrl = await fileToDataUrl(file);
+      const img = await loadImage(dataUrl);
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
+      const ratio = Math.min(pw / img.width, ph / img.height);
+      const w = img.width * ratio;
+      const h = img.height * ratio;
+      const x = (pw - w) / 2;
+      const y = (ph - h) / 2;
+
+      if (!firstPage) pdf.addPage();
+      pdf.addImage(dataUrl, 'JPEG', x, y, w, h);
+      firstPage = false;
+    }
+
+    imgProgressBar.style.width = '100%';
+    const baseName = imgFiles.length === 1
+      ? imgFiles[0].name.replace(/\.[^.]+$/, '')
+      : 'amza-images';
+    pdf.save(baseName + '.pdf');
+    incrementUsage();
+    const nameList = imgFiles.map(f => f.name).join(', ');
+    imgStatus.textContent = `✅ PDF created from: ${nameList} — downloaded as "${baseName}.pdf"`;
+    imgStatus.className = 'status-msg success';
+    showToast('PDF downloaded: ' + baseName + '.pdf', 'success');
+  } catch (e) {
+    imgStatus.textContent = '❌ Error creating PDF. Please try again.';
+    imgStatus.className = 'status-msg error';
+    showToast('Error creating PDF.', 'error');
+    console.error(e);
+  }
+
+  imgProgressWrap.classList.remove('show');
+  imgProgressBar.style.width = '0%';
+  convertImgBtn.innerHTML = '⚡ Convert to PDF';
+  updateImgUI();
+});
+
+function fileToDataUrl(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = src;
+  });
+}
+
+// ─── TOOL 2: PDF → IMAGES ────────────────────────────────────────────────────
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let pdfFile = null;
+const pdfInput = document.getElementById('pdfInput');
+const pdfFileName = document.getElementById('pdfFileName');
+const convertPdfBtn = document.getElementById('convertPdfBtn');
+const pdfPages = document.getElementById('pdfPages');
+const pdfStatus = document.getElementById('pdfStatus');
+const pdfProgressWrap = document.getElementById('pdfProgress');
+const pdfProgressBar = document.getElementById('pdfProgressBar');
+const pdfProgressLabel = document.getElementById('pdfProgressLabel');
+
+setupDragDrop(document.getElementById('pdfDropZone'));
+
+pdfInput.addEventListener('change', () => {
+  const file = pdfInput.files[0];
+  if (!file || file.type !== 'application/pdf') {
+    pdfFileName.textContent = '';
+    convertPdfBtn.disabled = true;
+    return;
+  }
+  pdfFile = file;
+  pdfFileName.textContent = '📄 ' + file.name;
+  convertPdfBtn.disabled = isLimited();
+  pdfPages.innerHTML = '';
+  pdfStatus.textContent = '';
+  pdfStatus.className = 'status-msg';
+});
+
+convertPdfBtn.addEventListener('click', async () => {
+  if (!checkLimitBeforeAction()) return;
+  if (!pdfFile) return;
+
+  convertPdfBtn.disabled = true;
+  convertPdfBtn.innerHTML = '<span class="spinner"></span> Converting…';
+  pdfProgressWrap.classList.add('show');
+  pdfProgressLabel.classList.add('show');
+  pdfPages.innerHTML = '';
+  pdfStatus.textContent = '';
+  pdfStatus.className = 'status-msg';
+
+  try {
+    const arrayBuffer = await pdfFile.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const total = pdf.numPages;
+
+    for (let i = 1; i <= total; i++) {
+      pdfProgressBar.style.width = Math.round(((i - 1) / total) * 100) + '%';
+      pdfProgressLabel.textContent = `Rendering page ${i} of ${total}…`;
+
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 2.0 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      const item = document.createElement('div');
+      item.className = 'pdf-page-item';
+      item.appendChild(canvas);
+
+      const footer = document.createElement('div');
+      footer.className = 'page-footer';
+      footer.innerHTML = `<span>Page ${i}</span>`;
+
+      const dlBtn = document.createElement('button');
+      dlBtn.className = 'page-dl-btn';
+      dlBtn.textContent = '⬇ Save';
+      const pdfBaseName = pdfFile.name.replace(/\.[^.]+$/, '');
+      dlBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = `${pdfBaseName}-page-${i}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+      footer.appendChild(dlBtn);
+      item.appendChild(footer);
+      pdfPages.appendChild(item);
+    }
+
+    pdfProgressBar.style.width = '100%';
+    pdfProgressLabel.textContent = `Done! ${total} page(s) rendered.`;
+    incrementUsage();
+    const pdfBaseName2 = pdfFile.name.replace(/\.[^.]+$/, '');
+    pdfStatus.textContent = `✅ "${pdfFile.name}" converted — ${total} page(s) saved as "${pdfBaseName2}-page-N.png". Click ⬇ Save on any page.`;
+    pdfStatus.className = 'status-msg success';
+    showToast(`${total} pages from "${pdfFile.name}" converted!`, 'success');
+  } catch (e) {
+    pdfStatus.textContent = '❌ Error reading PDF. Make sure the file is not password-protected.';
+    pdfStatus.className = 'status-msg error';
+    showToast('Error converting PDF.', 'error');
+    console.error(e);
+  }
+
+  pdfProgressWrap.classList.remove('show');
+  pdfProgressLabel.classList.remove('show');
+  pdfProgressBar.style.width = '0%';
+  convertPdfBtn.innerHTML = '⚡ Convert Pages to Images';
+  if (pdfFile) convertPdfBtn.disabled = isLimited();
+});
+
+// ─── TOOL 3: OCR ─────────────────────────────────────────────────────────────
+let ocrFile = null;
+const ocrInput = document.getElementById('ocrInput');
+const ocrFileName = document.getElementById('ocrFileName');
+const ocrBtn = document.getElementById('ocrBtn');
+const ocrOutput = document.getElementById('ocrOutput');
+const ocrStatus = document.getElementById('ocrStatus');
+const ocrProgressWrap = document.getElementById('ocrProgress');
+const ocrProgressBar = document.getElementById('ocrProgressBar');
+const ocrProgressLabel = document.getElementById('ocrProgressLabel');
+const ocrActions = document.getElementById('ocrActions');
+const copyTextBtn = document.getElementById('copyTextBtn');
+const editToggleBtn = document.getElementById('editToggleBtn');
+
+setupDragDrop(document.getElementById('ocrDropZone'));
+
+ocrInput.addEventListener('change', () => {
+  const file = ocrInput.files[0];
+  if (!file || !file.type.startsWith('image/')) {
+    ocrFileName.textContent = '';
+    ocrBtn.disabled = true;
+    return;
+  }
+  ocrFile = file;
+  ocrFileName.textContent = '🖼️ ' + file.name;
+  ocrBtn.disabled = isLimited();
+  ocrOutput.value = '';
+  ocrOutput.readOnly = true;
+  ocrActions.style.display = 'none';
+  ocrStatus.textContent = '';
+  ocrStatus.className = 'status-msg';
+  editToggleBtn.textContent = '✏️ Enable Editing';
+});
+
+ocrBtn.addEventListener('click', async () => {
+  if (!checkLimitBeforeAction()) return;
+  if (!ocrFile) return;
+
+  ocrBtn.disabled = true;
+  ocrBtn.innerHTML = '<span class="spinner"></span> Recognizing…';
+  ocrProgressWrap.classList.add('show');
+  ocrProgressLabel.classList.add('show');
+  ocrOutput.value = '';
+  ocrActions.style.display = 'none';
+  ocrStatus.textContent = '';
+  ocrStatus.className = 'status-msg';
+
+  try {
+    const result = await Tesseract.recognize(ocrFile, 'eng', {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          const pct = Math.round(m.progress * 100);
+          ocrProgressBar.style.width = pct + '%';
+          ocrProgressLabel.textContent = `Recognizing text… ${pct}%`;
+        } else {
+          ocrProgressLabel.textContent = m.status + '…';
+        }
+      }
+    });
+
+    const text = result.data.text.trim();
+    ocrOutput.value = text || '(No text detected in image)';
+    ocrProgressBar.style.width = '100%';
+    ocrProgressLabel.textContent = 'Done!';
+    ocrActions.style.display = '';
+    incrementUsage();
+    ocrStatus.textContent = `✅ Text extracted from "${ocrFile.name}" (${text.length} characters).`;
+    ocrStatus.className = 'status-msg success';
+    showToast(`OCR done: "${ocrFile.name}"`, 'success');
+  } catch (e) {
+    ocrStatus.textContent = '❌ OCR failed. Please try with a clearer image.';
+    ocrStatus.className = 'status-msg error';
+    showToast('OCR failed.', 'error');
+    console.error(e);
+  }
+
+  ocrProgressWrap.classList.remove('show');
+  ocrProgressLabel.classList.remove('show');
+  ocrProgressBar.style.width = '0%';
+  ocrBtn.innerHTML = '🔍 Extract Text';
+  if (ocrFile) ocrBtn.disabled = isLimited();
+});
+
+copyTextBtn.addEventListener('click', () => {
+  if (!ocrOutput.value) return;
+  navigator.clipboard.writeText(ocrOutput.value).then(() => {
+    showToast('Text copied to clipboard!', 'success');
+    copyTextBtn.textContent = '✅ Copied!';
+    setTimeout(() => { copyTextBtn.textContent = '📋 Copy Text'; }, 2000);
+  }).catch(() => {
+    ocrOutput.select();
+    document.execCommand('copy');
+    showToast('Text copied!', 'success');
+  });
+});
+
+editToggleBtn.addEventListener('click', () => {
+  const isReadOnly = ocrOutput.readOnly;
+  ocrOutput.readOnly = !isReadOnly;
+  editToggleBtn.textContent = isReadOnly ? '🔒 Lock Editing' : '✏️ Enable Editing';
+  if (isReadOnly) ocrOutput.focus();
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderUsage();
+</script>
+</body>
+</html>
